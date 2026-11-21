@@ -1,0 +1,22 @@
+# Illustrative QNX 8.0 AArch64 image. Adapt startup and drivers to the BSP.
+[search=.:$MKIFS_PATH]
+[virtual=aarch64le,elf] .bootstrap = {
+    startup-qemu-virt
+    PATH=/proc/boot
+    procnto-smp-instr
+}
+
+[+script] .script = {
+    display_msg "Booting qnxport example"
+    reopen /dev/ser1
+    [+session] esh &
+}
+
+libc.so
+libgcc_s.so.1
+/usr/lib/ldqnx-64.so.2=ldqnx-64.so.2
+esh
+
+[uid=0 gid=0 perms=0644] /etc/issue = {
+QNX qnxport demo
+}

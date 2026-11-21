@@ -1,0 +1,296 @@
+[
+  {
+    "id": "QNX001",
+    "severity": "error",
+    "title": "epoll is not provided by QNX 8.0",
+    "hint": "Use poll()/select() for portable readiness; redesign edge-triggered dispatch or use ionotify() for native notifications.",
+    "url": "https://www.qnx.com/developers/docs/8.0/com.qnx.doc.neutrino.lib_ref/topic/p/poll.html",
+    "match": {
+      "header": [
+        "sys/epoll.h"
+      ],
+      "call": [
+        "epoll_create",
+        "epoll_create1",
+        "epoll_ctl",
+        "epoll_wait",
+        "epoll_pwait",
+        "epoll_pwait2"
+      ]
+    }
+  },
+  {
+    "id": "QNX002",
+    "severity": "error",
+    "title": "Linux eventfd interface",
+    "hint": "Use a pipe for a portable wake-up FD or QNX pulses/ionotify for a native event loop. Preserve counter behavior explicitly.",
+    "url": "https://www.qnx.com/developers/docs/8.0/com.qnx.doc.neutrino.lib_ref/topic/i/ionotify.html",
+    "match": {
+      "header": [
+        "sys/eventfd.h"
+      ],
+      "call": [
+        "eventfd",
+        "eventfd_read",
+        "eventfd_write"
+      ]
+    }
+  },
+  {
+    "id": "QNX003",
+    "severity": "error",
+    "title": "Linux signalfd interface",
+    "hint": "Consider sigwaitinfo()/sigtimedwait() in a signal thread; explicitly bridge to the event loop if needed.",
+    "url": "https://www.qnx.com/developers/docs/8.0/com.qnx.doc.neutrino.lib_ref/topic/s/sigtimedwait.html",
+    "match": {
+      "header": [
+        "sys/signalfd.h"
+      ],
+      "call": [
+        "signalfd"
+      ]
+    }
+  },
+  {
+    "id": "QNX004",
+    "severity": "error",
+    "title": "Linux timerfd interface",
+    "hint": "Use POSIX timer_create() with signal delivery or a QNX pulse; it is not a file descriptor.",
+    "url": "https://www.qnx.com/developers/docs/8.0/com.qnx.doc.neutrino.lib_ref/topic/t/timer_create.html",
+    "match": {
+      "header": [
+        "sys/timerfd.h"
+      ],
+      "call": [
+        "timerfd_create",
+        "timerfd_settime",
+        "timerfd_gettime"
+      ]
+    }
+  },
+  {
+    "id": "QNX005",
+    "severity": "note",
+    "title": "Review inotify semantics on QNX",
+    "hint": "QNX 8.0 documents inotify in libfsnotify (-lfsnotify); verify supported events and filesystem behavior. ionotify covers device readiness, not filesystem event parity.",
+    "url": "https://www.qnx.com/developers/docs/8.0/com.qnx.doc.neutrino.lib_ref/topic/i/inotify_init.html",
+    "match": {
+      "header": [
+        "sys/inotify.h"
+      ],
+      "call": [
+        "inotify_init",
+        "inotify_init1",
+        "inotify_add_watch",
+        "inotify_rm_watch"
+      ]
+    }
+  },
+  {
+    "id": "QNX006",
+    "severity": "error",
+    "title": "Linux process-control extension",
+    "hint": "Map each prctl operation independently; ThreadCtl() covers selected thread controls, not process-control parity.",
+    "url": "https://www.qnx.com/developers/docs/8.0/com.qnx.doc.neutrino.lib_ref/topic/t/threadctl.html",
+    "match": {
+      "header": [
+        "sys/prctl.h"
+      ],
+      "call": [
+        "prctl"
+      ]
+    }
+  },
+  {
+    "id": "QNX007",
+    "severity": "error",
+    "title": "Linux system-information interface",
+    "hint": "Query the needed fields with documented sysconf(), uname(), or target-specific QNX APIs rather than recreating struct sysinfo.",
+    "url": "https://www.qnx.com/developers/docs/8.0/com.qnx.doc.neutrino.lib_ref/topic/s/sysconf.html",
+    "match": {
+      "header": [
+        "sys/sysinfo.h"
+      ],
+      "call": [
+        "sysinfo"
+      ]
+    }
+  },
+  {
+    "id": "QNX008",
+    "severity": "warning",
+    "title": "Linux-specific /proc/self path",
+    "hint": "QNX procfs is not Linux procfs. Check the exact entry; inspect process state with QNX procfs/devctl where appropriate.",
+    "url": "https://www.qnx.com/developers/docs/8.0/com.qnx.doc.neutrino.lib_ref/topic/d/devctl.html",
+    "match": {
+      "proc": true
+    }
+  },
+  {
+    "id": "QNX009",
+    "severity": "error",
+    "title": "Linux UAPI header",
+    "hint": "Use POSIX/QNX interfaces. Keep Linux kernel declarations in a Linux-only backend.",
+    "url": "https://www.qnx.com/developers/docs/8.0/com.qnx.doc.neutrino.lib_ref/topic/d/devctl.html",
+    "match": {
+      "header_prefix": [
+        "linux/",
+        "asm/"
+      ]
+    }
+  },
+  {
+    "id": "QNX010",
+    "severity": "warning",
+    "title": "Linux-specific dynamic-loader link flag",
+    "hint": "QNX provides dlopen() in libc; remove -ldl for QNX or let CMake select CMAKE_DL_LIBS.",
+    "url": "https://www.qnx.com/developers/docs/8.0/com.qnx.doc.neutrino.lib_ref/topic/d/dlopen.html",
+    "match": {
+      "link": [
+        "-ldl",
+        "dl"
+      ]
+    }
+  },
+  {
+    "id": "QNX011",
+    "severity": "warning",
+    "title": "Linux-specific realtime link flag",
+    "hint": "QNX provides timer_create() in libc; remove -lrt for QNX if this is the only dependency.",
+    "url": "https://www.qnx.com/developers/docs/8.0/com.qnx.doc.neutrino.lib_ref/topic/t/timer_create.html",
+    "match": {
+      "link": [
+        "-lrt",
+        "rt"
+      ]
+    }
+  },
+  {
+    "id": "QNX012",
+    "severity": "warning",
+    "title": "Linux-specific pthread library link flag",
+    "hint": "QNX provides pthread functions in libc. Prefer the build system's thread detection over hard-coding -lpthread.",
+    "url": "https://www.qnx.com/developers/docs/8.0/com.qnx.doc.neutrino.lib_ref/topic/p/pthread_create.html",
+    "match": {
+      "link": [
+        "-lpthread",
+        "pthread"
+      ]
+    }
+  },
+  {
+    "id": "QNX013",
+    "severity": "note",
+    "title": "Check QNX socket library linkage",
+    "hint": "Link libsocket with -lsocket for networking calls on QNX; add it only to targets that need it.",
+    "url": "https://www.qnx.com/developers/docs/8.0/com.qnx.doc.neutrino.io_sock/topic/socket_api.html",
+    "match": {
+      "call": [
+        "socket",
+        "socketpair",
+        "getaddrinfo",
+        "freeaddrinfo",
+        "getnameinfo",
+        "inet_pton",
+        "inet_ntop",
+        "accept4"
+      ]
+    }
+  },
+  {
+    "id": "QNX014",
+    "severity": "note",
+    "title": "Linux platform guard has no visible QNX branch",
+    "hint": "Review the fallback for QNX. Where behavior needs a QNX backend, select it with the QNX compiler macro __QNXNTO__.",
+    "url": "https://www.qnx.com/developers/docs/8.0/com.qnx.doc.neutrino.utilities/topic/q/qcc.html",
+    "match": {
+      "guard": true
+    }
+  },
+  {
+    "id": "QNX015",
+    "severity": "error",
+    "title": "Linux affinity interface",
+    "hint": "Set the QNX thread runmask with ThreadCtl() and _NTO_TCTL_RUNMASK; check mask width and inheritance before porting.",
+    "url": "https://www.qnx.com/developers/docs/8.0/com.qnx.doc.neutrino.lib_ref/topic/t/threadctl.html",
+    "match": {
+      "call": [
+        "sched_setaffinity",
+        "sched_getaffinity",
+        "pthread_setaffinity_np",
+        "pthread_getaffinity_np"
+      ]
+    }
+  },
+  {
+    "id": "QNX016",
+    "severity": "note",
+    "title": "Review gettid assumptions on QNX",
+    "hint": "QNX documents gettid(); do not treat its thread ID as a system-wide Linux TID. Use pthread_self() for portable thread identity.",
+    "url": "https://www.qnx.com/developers/docs/8.0/com.qnx.doc.neutrino.lib_ref/topic/g/gettid.html",
+    "match": {
+      "call": [
+        "gettid"
+      ],
+      "token": [
+        "SYS_gettid",
+        "__NR_gettid"
+      ]
+    }
+  },
+  {
+    "id": "QNX017",
+    "severity": "warning",
+    "title": "Linux mmap population flag",
+    "hint": "Do not rely on Linux prefault behavior on QNX. Review mmap() and residency requirements explicitly.",
+    "url": "https://www.qnx.com/developers/docs/8.0/com.qnx.doc.neutrino.lib_ref/topic/m/mmap.html",
+    "match": {
+      "token": [
+        "MAP_POPULATE"
+      ]
+    }
+  },
+  {
+    "id": "QNX018",
+    "severity": "note",
+    "title": "Review SO_REUSEPORT semantics on QNX",
+    "hint": "Verify io-sock bind and distribution behavior; cross-user reuse can require the network/reuseport ability.",
+    "url": "https://www.qnx.com/developers/docs/8.0/com.qnx.doc.security.system/topic/manual/abilities_reference.html",
+    "match": {
+      "token": [
+        "SO_REUSEPORT"
+      ]
+    }
+  },
+  {
+    "id": "QNX019",
+    "severity": "warning",
+    "title": "Review glibc backtrace interface",
+    "hint": "Prefer debugger unwinding; QNX documents a best-effort, unsupported libbacktrace interface with different APIs.",
+    "url": "https://www.qnx.com/developers/docs/8.0/com.qnx.doc.neutrino.technotes/topic/backtrace.html",
+    "match": {
+      "header": [
+        "execinfo.h"
+      ],
+      "call": [
+        "backtrace",
+        "backtrace_symbols",
+        "backtrace_symbols_fd"
+      ]
+    }
+  },
+  {
+    "id": "QNX020",
+    "severity": "note",
+    "title": "Review allocator statistics on QNX",
+    "hint": "QNX documents mallinfo() in libc. Do not rely on glibc-specific field interpretations or assume mallinfo2() is available.",
+    "url": "https://www.qnx.com/developers/docs/8.0/com.qnx.doc.neutrino.lib_ref/topic/m/mallinfo.html",
+    "match": {
+      "call": [
+        "mallinfo",
+        "mallinfo2",
+        "malloc_info"
+      ]
+    }
+  }
+]

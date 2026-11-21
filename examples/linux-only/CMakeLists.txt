@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 3.16)
+project(port_demo LANGUAGES C)
+add_executable(port_demo main.c)
+target_link_libraries(port_demo PRIVATE dl rt pthread)
+install(TARGETS port_demo RUNTIME DESTINATION bin)
